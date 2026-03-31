@@ -5,7 +5,7 @@
 
 
 ## Criando a Tabela
-CREATE TABLE user (
+CREATE TABLE users (
     id INT IDENTITY(1,1) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255),
