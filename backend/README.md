@@ -2,3 +2,12 @@
 
 ## Sistema de Vendas 
  (NodeJS | Express | SQL Server | React)
+
+
+## Criando a Tabela
+CREATE TABLE user (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255),
+    age INT
+);
