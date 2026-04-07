@@ -1,8 +1,8 @@
 import sql from "mysql2"
 
 export const db = sql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "sis_vendas"
+    host: "sql3.freesqldatabase.com",
+    user: "sql3822436",
+    password: "xVVVWJpSMr",
+    database: "sql3822436"
 })
