@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import Relatorio from "./components/Relatorio.js";
 
 const Container = styled.div`
   width: 100%;
@@ -42,6 +43,7 @@ function App() {
         <Title>USUÁRIOS</Title>
         <Form onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUsers} />
         <Grid setOnEdit={setOnEdit} users={users} setUsers={setUsers} />
+        <Relatorio onEdit={null} setOnEdit={null} getUsers={null} />
       </Container>
       <ToastContainer autoClose={3000} position={toast.POSITION.BOTTOM_LEFT} />
       <GlobalStyle />
