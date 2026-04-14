@@ -10,6 +10,10 @@ import {
   Typography,
   Tooltip,
   Button,
+  Box,
+  MenuItem,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -33,6 +37,16 @@ export default function UserList() {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  // 🆕 novo usuário
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [newUser, setNewUser] = useState({
+    nome: "",
+    login: "",
+    senha: "",
+    tipo: "caixa",
+    ativo: true,
+  });
+
   const showToast = (message, severity = "success") => {
     setToast({ open: true, message, severity });
   };
@@ -50,6 +64,7 @@ export default function UserList() {
     fetchUsers();
   }, []);
 
+  // ✏️ editar
   const handleEdit = (user) => {
     setSelectedUser(user);
     setOpenModal(true);
@@ -66,6 +81,7 @@ export default function UserList() {
     }
   };
 
+  // ❌ delete
   const handleOpenDelete = (user) => {
     setUserToDelete(user);
     setOpenDeleteModal(true);
@@ -79,6 +95,25 @@ export default function UserList() {
       fetchUsers();
     } catch {
       showToast("Erro ao deletar usuário", "error");
+    }
+  };
+
+  // 🆕 criar usuário
+  const handleCreate = async () => {
+    try {
+      await api.post("/users", newUser);
+      showToast("Usuário criado com sucesso");
+      setOpenCreateModal(false);
+      setNewUser({
+        nome: "",
+        login: "",
+        senha: "",
+        tipo: "caixa",
+        ativo: true,
+      });
+      fetchUsers();
+    } catch {
+      showToast("Erro ao criar usuário", "error");
     }
   };
 
@@ -100,17 +135,13 @@ export default function UserList() {
       renderCell: (params) => (
         <>
           <Tooltip title="Editar">
-            <IconButton
-              color="primary"
-              onClick={() => handleEdit(params.row)}
-            >
+            <IconButton onClick={() => handleEdit(params.row)}>
               <EditIcon />
             </IconButton>
           </Tooltip>
 
           <Tooltip title="Excluir">
             <IconButton
-              color="error"
               onClick={() => handleOpenDelete(params.row)}
             >
               <DeleteIcon />
@@ -123,6 +154,20 @@ export default function UserList() {
 
   return (
     <>
+      {/* 🆕 Botão novo usuário */}
+      <Box mb={2}>
+        <Typography variant="h5" mb={2}>
+        Usuários
+      </Typography>
+
+        <Button
+          variant="contained"
+          onClick={() => setOpenCreateModal(true)}
+        >
+          Novo Usuário
+        </Button>
+      </Box>
+
       <div style={{ height: 500 }}>
         <DataGrid
           rows={rows}
@@ -131,7 +176,7 @@ export default function UserList() {
         />
       </div>
 
-      {/* ✏️ Modal de edição */}
+      {/* ✏️ Modal edição */}
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
         <DialogTitle>Editar Usuário</DialogTitle>
 
@@ -165,6 +210,35 @@ export default function UserList() {
               setSelectedUser({ ...selectedUser, senha: e.target.value })
             }
           />
+
+          <TextField
+            select
+            margin="dense"
+            label="Tipo"
+            fullWidth
+            value={selectedUser?.tipo || "caixa"}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, tipo: e.target.value })
+            }
+          >
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="caixa">Caixa</MenuItem>
+          </TextField>
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={!!selectedUser?.ativo}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    ativo: e.target.checked ? 1 : 0,
+                  })
+                }
+              />
+            }
+            label="Ativo"
+          />
         </DialogContent>
 
         <DialogActions>
@@ -175,7 +249,80 @@ export default function UserList() {
         </DialogActions>
       </Dialog>
 
-      {/* 🗑️ Modal de confirmação DELETE */}
+      {/* 🆕 Modal criar */}
+      <Dialog open={openCreateModal} onClose={() => setOpenCreateModal(false)}>
+        <DialogTitle>Novo Usuário</DialogTitle>
+
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="Nome"
+            fullWidth
+            value={newUser.nome}
+            onChange={(e) =>
+              setNewUser({ ...newUser, nome: e.target.value })
+            }
+          />
+
+          <TextField
+            margin="dense"
+            label="Login"
+            fullWidth
+            value={newUser.login}
+            onChange={(e) =>
+              setNewUser({ ...newUser, login: e.target.value })
+            }
+          />
+
+          <TextField
+            margin="dense"
+            label="Senha"
+            fullWidth
+            value={newUser.senha}
+            onChange={(e) =>
+              setNewUser({ ...newUser, senha: e.target.value })
+            }
+          />
+
+          <TextField
+            select
+            margin="dense"
+            label="Tipo"
+            fullWidth
+            value={newUser.tipo}
+            onChange={(e) =>
+              setNewUser({ ...newUser, tipo: e.target.value })
+            }
+          >
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="caixa">Caixa</MenuItem>
+          </TextField>
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={newUser.ativo}
+                onChange={(e) =>
+                  setNewUser({
+                    ...newUser,
+                    ativo: e.target.checked,
+                  })
+                }
+              />
+            }
+            label="Ativo"
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setOpenCreateModal(false)}>Cancelar</Button>
+          <Button onClick={handleCreate} variant="contained">
+            Criar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 🗑️ Modal delete */}
       <Dialog
         open={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
@@ -193,12 +340,7 @@ export default function UserList() {
           <Button onClick={() => setOpenDeleteModal(false)}>
             Cancelar
           </Button>
-
-          <Button
-            color="error"
-            variant="contained"
-            onClick={handleConfirmDelete}
-          >
+          <Button color="error" variant="contained" onClick={handleConfirmDelete}>
             Excluir
           </Button>
         </DialogActions>
