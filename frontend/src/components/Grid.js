@@ -47,6 +47,7 @@ const Grid = ({ users, setUsers, setOnEdit }) => {
   };
 
   const handleDelete = async (id) => {
+    console.log("deletando")
     await axios
       .delete("http://localhost:8800/api/users/" + id)
       .then(({ data }) => {

@@ -66,6 +66,7 @@ const Form = ({ getUsers, onEdit, setOnEdit }) => {
     }
 
     if (onEdit) {
+      console.log("editando")
       await axios
         .put("http://localhost:8800/api/users/" + onEdit.id, {
           name: user.name.value,
@@ -75,6 +76,7 @@ const Form = ({ getUsers, onEdit, setOnEdit }) => {
         .then(({ data }) => toast.success(data))
         .catch(({ data }) => toast.error(data));
     } else {
+      console.log("salvando")
       await axios
         .post("http://localhost:8800/api/users", {
           name: user.name.value,
