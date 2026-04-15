@@ -35,8 +35,6 @@ export const addProduto = (req, res) => {
 
 
 
-
-
 export const updateProduto = (req, res) => {
   console.log("updateProduto");
   const q =
