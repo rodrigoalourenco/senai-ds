@@ -1,69 +1,61 @@
 import { db } from "../connection/db.js";
 
+// 🔍 LISTAR
 export const getAllUsers = (_, res) => {
-    console.log("getAllUsers");
+  const q = "SELECT * FROM usuarios";
 
-    const q = "SELECT * FROM users";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
 
-    db.query(q, (err, data) => {
-        if (err) return res.json(err)
-        return res.status(200).json(data)
-    });
-}
-
-
-
+// ➕ CRIAR
 export const addUser = (req, res) => {
-  console.log("addUser");
   const q =
-    "INSERT INTO users(`name`, `last_name`, `age`) VALUES(?)";
+    "INSERT INTO usuarios (`nome`, `login`, `senha`, `tipo`, `ativo`) VALUES (?, ?, ?, ?, ?)";
 
   const values = [
-    req.body.name,
-    req.body.last_name,
-    req.body.age,
+    req.body.nome,
+    req.body.login,
+    req.body.senha,
+    req.body.tipo || "caixa",
+    req.body.ativo ?? 1,
   ];
 
-  db.query(q, [values], (err) => {
-    if (err) return res.json(err);
+  db.query(q, values, (err) => {
+    if (err) return res.status(500).json(err);
 
     return res.status(200).json("Usuário criado com sucesso.");
   });
 };
 
-
-
-
-
+// ✏️ ATUALIZAR
 export const updateUser = (req, res) => {
-  console.log("updateUser");
   const q =
-    "UPDATE users SET `name` = ?, `last_name` = ?, `age` = ? WHERE `id` = ?";
+    "UPDATE usuarios SET `nome`=?, `login`=?, `senha`=?, `tipo`=?, `ativo`=? WHERE `idusuarios`=?";
 
   const values = [
-    req.body.name,
-    req.body.last_name,
-    req.body.age,
+    req.body.nome,
+    req.body.login,
+    req.body.senha,
+    req.body.tipo,
+    req.body.ativo,
   ];
 
   db.query(q, [...values, req.params.id], (err) => {
-    if (err) return res.json(err);
+    if (err) return res.status(500).json(err);
 
     return res.status(200).json("Usuário atualizado com sucesso.");
   });
 };
 
-
-
-
-
-
+// ❌ DELETAR
 export const deleteUser = (req, res) => {
-  console.log("deleteUser");
-  const q = "DELETE FROM users WHERE `id` = ?";
+  const q = "DELETE FROM usuarios WHERE `idusuarios` = ?";
 
   db.query(q, [req.params.id], (err) => {
-    if (err) return res.json(err);
+    if (err) return res.status(500).json(err);
 
     return res.status(200).json("Usuário deletado com sucesso.");
   });

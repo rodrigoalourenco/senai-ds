@@ -6,3 +6,12 @@ export const db = sql.createConnection({
     password: "",
     database: "sql10823122"
 })
+
+db.connect((err) => {
+    if (err) {
+        console.error("❌ Erro ao conectar no banco:", err.message)
+        return
+    }
+
+    console.log("✅ Banco de dados conectado com sucesso!")
+})
