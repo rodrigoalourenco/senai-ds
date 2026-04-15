@@ -5,8 +5,8 @@ import MainLayout from "../components/layout/MainLayout";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Users from "../pages/users/UserList";
 import Products from "../pages/products/ProductList";
-// import Sales from "../pages/sales/SalesList";
-// import Reports from "../pages/reports/Reports";
+import Sales from "../pages/sales/SalesList";
+import Reports from "../pages/reports/Reports";
 
 export default function AppRoutes() {
   return (
@@ -16,9 +16,8 @@ export default function AppRoutes() {
           <Route index element={<Dashboard />} />
           <Route path="products" element={<Products />} />
           <Route path="users" element={<Users />} />
-          
-          {/*<Route path="sales" element={<Sales />} />
-          <Route path="reports" element={<Reports />} /> */}
+          <Route path="sales" element={<Sales />} />
+          <Route path="reports" element={<Reports />} />
         </Route>
       </Routes>
     </BrowserRouter>
